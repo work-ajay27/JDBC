@@ -1,0 +1,56 @@
+package temp;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+public class Student {
+
+	public static void main(String[] args) throws SQLException {
+		String url = "jdbc:mysql://localhost:3306/employee";
+		String user = "root";
+		String password = "root";
+
+//		1. Create Connection
+		Connection con = DriverManager.getConnection(url, user, password);
+		System.out.println("Connection Succesful");
+
+//		2. Create Table
+		Statement statement = con.createStatement();
+
+		String Query = "Create Table if not Exists Engineers(name varchar(20),age int,salary int)";
+		statement.execute(Query);
+		System.out.println("Table Create Successfully");
+
+//	3. Insert Data into Table
+
+//		execute is use when we insert the data, executeQuery is use when we need to retrive the data.
+
+		String insertData = "insert into engineers(name,age,salary) values(?,?,?)";
+		PreparedStatement ps = con.prepareStatement(insertData);
+		ps.setString(1, "Striver");
+		ps.setInt(2, 20);
+		ps.setInt(3, 89955);
+
+		ps.executeUpdate(); //executeUpdate() is use with Prepared Statement;
+		
+		System.out.println("Data inserted");
+
+//4. Retrive the data		
+
+		String executeQuery = "Select * from engineers ";
+		ResultSet rs = statement.executeQuery(executeQuery);
+
+		while (rs.next()) {
+			System.out.println(rs.getString("name"));
+			System.out.println(rs.getInt("age"));
+			System.out.println(rs.getInt("salary"));
+		}
+		rs.close();
+		statement.close();
+		con.close();
+	}
+}
